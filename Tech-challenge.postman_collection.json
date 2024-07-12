@@ -1,0 +1,458 @@
+{
+	"info": {
+		"_postman_id": "85a88299-11d4-4dd6-a48e-e21fed1541a9",
+		"name": "Tech-challenge",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "7488873"
+	},
+	"item": [
+		{
+			"name": "Fluxo",
+			"item": [
+				{
+					"name": "adicionar-cliente",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (responseCode.code === 200) {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.collectionVariables.set(\"idCliente\", jsonData.id);\r",
+									"}\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"nome\": \"usuario-teste\",\n  \"email\": \"usuario@gmail.com\",\n  \"cpf\": \"527.319.829-73\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/cliente",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"cliente"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "buscar-cliente-por-cpf",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/api/cliente-cpf/527.319.829-73",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"cliente-cpf",
+								"527.319.829-73"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "busca-produto-por-categoria",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/api/produto/categoria/Lanches",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"produto",
+								"categoria",
+								"Lanches"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "adicionar-pedido",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (responseCode.code === 200) {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.collectionVariables.set(\"idPedido\", jsonData.id);\r",
+									"}\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"cliente\": \"{{idCliente}}\",\n    \"status\": \"RECEBIDO\",\n    \"itensPedido\": [\n        {\n            \"idProduto\": \"0688c7bd-daac-4db6-a52b-c6cbcb3e1b85\",\n            \"quantidade\": 1\n        },\n        {\n            \"idProduto\": \"342e139f-3c3b-450d-b2b2-b18db17d9be6\",\n            \"quantidade\": 1\n        },\n        {\n            \"idProduto\": \"7f1152f7-66bc-44d9-aae6-4c0161194c59\",\n            \"quantidade\": 1\n        }\n    ]\n}"
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/pedido",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"pedido"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "listar-pedidos",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/pedidos",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"pedidos"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "admin",
+			"item": [
+				{
+					"name": "buscar-pedido-por-status",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/api/pedido/status/FINALIZADO",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"pedido",
+								"status",
+								"FINALIZADO"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Fluxo - segunda entrega",
+			"item": [
+				{
+					"name": "adicionar-cliente",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (responseCode.code === 200) {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.collectionVariables.set(\"idCliente\", jsonData.id);\r",
+									"}\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"nome\": \"usuario-4\",\n  \"email\": \"usuario@gmail.com\",\n  \"cpf\": \"517.319.829-73\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/cliente",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"cliente"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "checkout-pedido",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Extrai o valor do campo \"campo_desejado\" da resposta JSON\r",
+									"var valor = JSON.parse(responseBody).idPedido;\r",
+									"\r",
+									"// Salva o valor como uma variável global no Postman\r",
+									"pm.collectionVariables.set(\"idPedido\", valor);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"cliente\": \"{{idCliente}}\",\n    \"status\": \"PENDENTE_PAGAMENTO\",\n    \"itensPedido\": [\n        {\n            \"idProduto\": \"0688c7bd-daac-4db6-a52b-c6cbcb3e1b85\",\n            \"quantidade\": 1\n        },\n        {\n            \"idProduto\": \"342e139f-3c3b-450d-b2b2-b18db17d9be6\",\n            \"quantidade\": 1\n        },\n        {\n            \"idProduto\": \"7f1152f7-66bc-44d9-aae6-4c0161194c59\",\n            \"quantidade\": 1\n        }\n    ],\n    \"statusPagamento\": \"EM_ANALISE\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/checkout-pedido",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"checkout-pedido"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Consultar status pagamento",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/pagamento/{{idPedido}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"pagamento",
+								"{{idPedido}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Webhook - pagamento",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"idPedido\": \"{{idPedido}}\",\n  \"statusPagamento\": \"APROVADO\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/webhook-pagamento",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"webhook-pagamento"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Listar pedidos não finalizados",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/pedidos/nao-finalizados",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"pedidos",
+								"nao-finalizados"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "atualiza-status",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"status\": \"EM_PREPARACAO\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/pedido/atualizar-status/{{idPedido}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"pedido",
+								"atualizar-status",
+								"{{idPedido}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "idCliente",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "idPedido",
+			"value": "",
+			"type": "string"
+		}
+	]
+}
