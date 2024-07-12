@@ -6,11 +6,9 @@ import { PedidoEntity } from "../../../core/domain/entities/pedidos";
 export class PedidoRepositoryAdapter implements PedidoRepositoryInterface {
 
     private pedidoRepository: Repository<PedidoEntity>;
-    private itemPedidoRepository: Repository<ItemPedidoEntity>;
 
-    constructor(pedidoRepository: Repository<PedidoEntity>, itemPedidoRepository: Repository<ItemPedidoEntity>) {
+    constructor(pedidoRepository: Repository<PedidoEntity>) {
         this.pedidoRepository = pedidoRepository;
-        this.itemPedidoRepository = itemPedidoRepository;
     }
 
     async criarPedido(pedido: PedidoEntity): Promise<PedidoEntity> {
@@ -18,23 +16,19 @@ export class PedidoRepositoryAdapter implements PedidoRepositoryInterface {
     }
 
     async buscarTodosPedidos(): Promise<PedidoEntity[]> {
-        return this.pedidoRepository.find({
-            relations: {
-                itensPedido: true
-            },
-        });
+        return this.pedidoRepository.find();
     }
 
-    async buscarPedidoPorId(id: string): Promise<PedidoEntity | undefined> {
-        return this.pedidoRepository.findOne({ where: { id: id }, relations: { itensPedido: true } });
+    async buscarPedidoPorUuid(uuid: string): Promise<PedidoEntity | undefined> {
+        return this.pedidoRepository.findOne({ where: { uuid: uuid }});
     }
 
     async buscarPedidoPorNumeroPedido(numeroPedido: number): Promise<PedidoEntity | undefined> {
-        return this.pedidoRepository.findOne({ where: { numeroPedido: numeroPedido }, relations: { itensPedido: true } });
+        return this.pedidoRepository.findOne({ where: { numeroPedido: numeroPedido }});
     }
 
     async buscarPedidoPorStatus(status: string): Promise<PedidoEntity[]> {
-        return this.pedidoRepository.find({ where: { status: status }, relations: { itensPedido: true } });
+        return this.pedidoRepository.find({ where: { status: status }});
     }
 
     async atualizarPedido(pedido: PedidoEntity): Promise<PedidoEntity> {
@@ -47,10 +41,11 @@ export class PedidoRepositoryAdapter implements PedidoRepositoryInterface {
     }
 
     async deletarItensPedido(itensPedido): Promise<ItemPedidoEntity[]> {
-        const result = itensPedido.forEach(element => {
-            return this.itemPedidoRepository.remove(element);
-        });
-        return result;
+        // const result = itensPedido.forEach(element => {
+        //     return this.itemPedidoRepository.remove(element);
+        // });
+        // return result;
+        return null;
     }
 
     async buscarPedidosNaoFinalizados(): Promise<PedidoEntity[]> {

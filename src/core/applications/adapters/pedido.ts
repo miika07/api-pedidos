@@ -1,3 +1,4 @@
+import { ObjectId } from "typeorm";
 import { ItemPedidoEntity } from "../../domain/entities/itemPedido";
 import { PedidoEntity } from "../../domain/entities/pedidos";
 import { ItemPedido } from "../models/itensPedido";
@@ -10,8 +11,6 @@ export const parserNewItensPedidoDB = (idProduto: string, quantidade: number): I
 
 export const parserItemPedido = (itemPedidoDB: ItemPedidoEntity): ItemPedido => {
     return {
-        ...itemPedidoDB.id && { id: itemPedidoDB.id },
-        idPedido: itemPedidoDB.idPedido,
         idProduto: itemPedidoDB.idProduto,
         quantidade: itemPedidoDB.quantidade
     }
@@ -53,9 +52,10 @@ export const parserNewPedidoDB = (idCliente: string, status: string, itensPedido
     return produto;
 }
 
-export const parserPedidoDB = (id: string, idCliente: string, status: string, itensPedido: ItemPedidoEntity[], numeroPedido: number): PedidoEntity => {
+export const parserPedidoDB = (id: ObjectId, uuid: string, idCliente: string, status: string, itensPedido: ItemPedidoEntity[], numeroPedido: number): PedidoEntity => {
     return {
         id,
+        uuid,
         idCliente,
         status,
         itensPedido,
@@ -66,6 +66,7 @@ export const parserPedidoDB = (id: string, idCliente: string, status: string, it
 export const parserPedido = (pedidoDB: PedidoEntity): Pedido => {
     return {
         ...pedidoDB.id && { id: pedidoDB.id },
+        ...pedidoDB.uuid && { uuid: pedidoDB.uuid },
         ...pedidoDB.idCliente && { idCliente: pedidoDB.idCliente },
         status: Status[pedidoDB.status],
         itensPedido: pedidoDB.itensPedido.map(item => parserItemPedido(item)),
@@ -78,6 +79,7 @@ export const parserPedidos = (pedidosDB: PedidoEntity[]): Pedido[] => {
     pedidosDB.forEach((pedidoDB) => {
         pedidos.push({
             ...pedidoDB.id && { id: pedidoDB.id },
+            ...pedidoDB.uuid && { uuid: pedidoDB.uuid },
             ...pedidoDB.idCliente && { idCliente: pedidoDB.idCliente },
             status: Status[pedidoDB.status],
             itensPedido: pedidoDB.itensPedido.map(item => parserItemPedido(item)),
@@ -93,7 +95,7 @@ export const parserPedidosComDescricao = (pedidosDB: PedidoEntity[]) => {
         let cliente: any = pedidoDB.idCliente; 
         pedidos.push({
             ...pedidoDB.id && { id: pedidoDB.id },
-           
+            ...pedidoDB.uuid && { uuid: pedidoDB.uuid },
             status: Status[pedidoDB.status],
             itensPedido: pedidoDB.itensPedido.map(item => {
                 let obj: any = item.idProduto;
@@ -108,7 +110,7 @@ export const parserPedidosComDescricao = (pedidosDB: PedidoEntity[]) => {
 
 export const parserCheckoutPedido = (pedidoDB: PedidoEntity): CheckoutPedidoResponse => {
     return {
-        idPedido: pedidoDB.id,
+        idPedido: pedidoDB.uuid,
         numeroPedido: pedidoDB.numeroPedido
     }
 }

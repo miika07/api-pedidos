@@ -1,15 +1,59 @@
-version: '3'
+version: '3.7'
 services:
-    mysql:
-        image: mysql:latest
+     # Serviço para o banco de dados
+    mongodb:
+        container_name: mongodb
+        image: mongo:latest
         environment:
-            MYSQL_ROOT_PASSWORD: root
-            MYSQL_DATABASE: tech-challenge-fiap
-            MYSQL_USER: fiap
-            MYSQL_PASSWORD: password
+            MONGO_INITDB_ROOT_USERNAME: fiap
+            MONGO_INITDB_ROOT_PASSWORD: password
+            MONGO_INITDB_DATABASE: tech-challenge-fiap
+        restart: always
         ports:
-            - "3306:3306"
+            - "27017:27017"
         volumes:
-            - db_data:/var/lib/mysql
+            - mongo_data:/data/db
+            - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+        networks:
+            - tech-challenge-rede
+        healthcheck:
+            # test: "echo 'db.runCommand({ ping: 1 })' | mongosh --username fiap --password password --authenticationDatabase admin --quiet"
+            test: "echo 'db.getMongo().getDBNames().indexOf(\"tech-challenge-fiap\") >= 0' | mongosh --username fiap --password password --authenticationDatabase admin --quiet | grep -q 'true'"
+            interval: 20s
+            timeout: 10s
+            retries: 5
+    mongo-express:
+        image: mongo-express:latest
+        container_name: mongo-express
+        restart: always
+        ports:
+            - "8081:8081"
+        environment:
+            ME_CONFIG_MONGODB_ADMINUSERNAME: fiap
+            ME_CONFIG_MONGODB_ADMINPASSWORD: password
+            ME_CONFIG_MONGODB_SERVER: mongodb
+        networks:
+            - tech-challenge-rede
+    # Serviço para o backend em nodejs
+    node-app:
+        container_name: fiap-backend
+        build:
+            context: .
+            dockerfile: Dockerfile
+        # command: sh -c "npm run build:run"
+        ports:
+            - "3000:3000"
+        networks:
+            - tech-challenge-rede
+        volumes:
+            - /usr/src/app
+        depends_on:
+            mongodb:
+                condition: service_healthy
+        restart: on-failure
 volumes:
-    db_data:
+  mongo_data:
+
+networks:
+  tech-challenge-rede:
+    driver: bridge

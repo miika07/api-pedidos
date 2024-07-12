@@ -1,3 +1,4 @@
+import { ObjectId } from "typeorm";
 import { ItemPedido } from "./itensPedido";
 
 export enum Status {
@@ -9,7 +10,8 @@ export enum Status {
 }
 
 export class Pedido {
-    id?: string;
+    id?: ObjectId;
+    uuid?: string
     idCliente?: string;
     status: string;
     itensPedido?: ItemPedido[];

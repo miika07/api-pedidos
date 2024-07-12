@@ -1,35 +1,40 @@
 version: '3'
 services:
-    # Serviço para o banco de dados MySQL
-    mysql:
-        image: mysql:latest
+    # Serviço para o banco de dados
+    mongodb:
+        image: mongo:latest
         environment:
-            MYSQL_ROOT_PASSWORD: root
-            MYSQL_DATABASE: tech-challenge-fiap
-            MYSQL_USER: fiap
-            MYSQL_PASSWORD: password
+            MONGO_INITDB_ROOT_USERNAME: fiap
+            MONGO_INITDB_ROOT_PASSWORD: password
+        restart: always
         ports:
-            - "3306:3306"
+            - "27017:27017"
         networks:
             - tech-challenge-rede
         volumes:
-            - db_data:/var/lib/mysql
+            - mongo_data:/data/db
+            - ./src/infra/data/database/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
         healthcheck:
-            test: "mysql $$MYSQL_DATABASE -u$$MYSQL_USER -p$$MYSQL_PASSWORD -e 'SELECT 1;'"
+            test: ["CMD", "mongo", "--username", "fiap", "--password", "password", "--eval", "db.adminCommand('ping')"]
             interval: 20s
             timeout: 10s
-            retries: 5
-    mysqltest:
-        image: mysql:latest
-        environment:
-            MYSQL_ROOT_PASSWORD: root
-            MYSQL_DATABASE: tech-challenge-fiap-test
-            MYSQL_USER: fiap-test
-            MYSQL_PASSWORD: password
+            retries: 5 
+
+    # Serviço para o mongo-express (painel de uso do mongo)
+    mongo-express:
+        image: mongo-express:latest
+        container_name: mongo-express
+        restart: always
         ports:
-            - "3307:3306"
+            - "8081:8081"
+        environment:
+            ME_CONFIG_MONGODB_ADMINUSERNAME: fiap
+            ME_CONFIG_MONGODB_ADMINPASSWORD: password
+            ME_CONFIG_MONGODB_SERVER: mongodb
         networks:
             - tech-challenge-rede
+
+    # Serviço para o backend em nodejs
     node-app:
         container_name: fiap-backend
         build:
@@ -43,11 +48,11 @@ services:
         volumes:
             - /usr/src/app
         depends_on:
-            mysql:
+            mongodb:
                 condition: service_healthy
         restart: on-failure
 volumes:
-    db_data:
+    mongo_data:
 networks:
     tech-challenge-rede:
         driver: bridge

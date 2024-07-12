@@ -19,7 +19,7 @@ export default class PedidoController {
         : AppDataSource.getRepository(ItemPedidoEntity);
     
     //Pedido
-    private adapter: PedidoRepositoryAdapter = new PedidoRepositoryAdapter(this.pedidoRepository, this.itemPedidoRepository);
+    private adapter: PedidoRepositoryAdapter = new PedidoRepositoryAdapter(this.pedidoRepository);
     private readonly pedidoManagerUseCase: PedidoManagerUseCase = new PedidoManagerUseCase(this.adapter);
 
     public buscarTodosPedidos = async (
@@ -38,7 +38,7 @@ export default class PedidoController {
         request: Hapi.Request, h: Hapi.ResponseToolkit
     ): Promise<any> => {
         try {
-            const data = await this.pedidoManagerUseCase.buscarPedidoPorId(request.params.id)
+            const data = await this.pedidoManagerUseCase.buscarPedidoPorUuid(request.params.id)
             if (data) {
                 return h.response(data).code(200);
             }

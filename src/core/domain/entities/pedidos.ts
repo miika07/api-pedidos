@@ -1,12 +1,15 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn, OneToMany, ManyToOne, Unique, ManyToMany, CreateDateColumn, UpdateDateColumn } from 'typeorm';
-import { v4 as uuidv4 } from 'uuid';
+import { Entity, Column, ObjectIdColumn } from 'typeorm';
 import { ItemPedidoEntity } from './itemPedido';
+import { ObjectId } from 'mongodb';
+import { v4 as uuidv4 } from 'uuid';
 
 @Entity({ name: 'pedidos' })
-@Unique(['numeroPedido'])
 export class PedidoEntity {
-    @PrimaryGeneratedColumn('uuid')
-    id: string;
+    @ObjectIdColumn()
+    id: ObjectId;
+
+    @Column()
+    uuid: string;
 
     @Column()
     idCliente: string;
@@ -14,23 +17,24 @@ export class PedidoEntity {
     @Column()
     status: string;
 
-    @OneToMany(() => ItemPedidoEntity, itemPedido => itemPedido.idPedido, { onDelete: "CASCADE", cascade: true } )
+    @Column(type => ItemPedidoEntity)
     itensPedido: ItemPedidoEntity[];
 
-    @Column({nullable: false, generated: 'increment' })
+    @Column()
     numeroPedido: number;
 
-    @CreateDateColumn({ type: "timestamp", default: () => "CURRENT_TIMESTAMP(6)" })
+    @Column({ default: () => new Date() })
     public createdAt?: Date;
 
-    @UpdateDateColumn({ type: "timestamp", default: () => "CURRENT_TIMESTAMP(6)", onUpdate: "CURRENT_TIMESTAMP(6)" })
+    @Column({ default: () => new Date() })
     public updatedAt?: Date;
 
-
-    constructor(idCliente: string = null, status: string = '', itensPedido: ItemPedidoEntity[] ) {
-        this.id = uuidv4();
+    constructor(idCliente: string = null, status: string = '', itensPedido: ItemPedidoEntity[]) {
+        this.id = new ObjectId();
+        this.uuid = uuidv4();
         this.idCliente = idCliente;
         this.status = status;
+        this.numeroPedido = Math.floor(Math.random() * 10000);
         this.itensPedido = itensPedido
     }
 }

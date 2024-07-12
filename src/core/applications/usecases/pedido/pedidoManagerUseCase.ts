@@ -24,8 +24,8 @@ export default class PedidoManagerUseCase {
         return parserPedidos(response);
     }
 
-    async buscarPedidoPorId(id: string): Promise<Pedido> {
-        const response = await this.adapter.buscarPedidoPorId(id);
+    async buscarPedidoPorUuid(uuid: string): Promise<Pedido> {
+        const response = await this.adapter.buscarPedidoPorUuid(uuid);
         return response ? parserPedido(response) : response;
     }
 
@@ -34,21 +34,22 @@ export default class PedidoManagerUseCase {
         return response ? parserPedidos(response) : response;
     }
 
-    async atualizarPedido(id: string, status: string, itensPedido: ItemPedido[]): Promise<Pedido | undefined> {
-        const pedido = await this.adapter.buscarPedidoPorId(id);
-        if (pedido) {
-            const itensPedidoParsed = parserItems(id, itensPedido, pedido.itensPedido);
-            const pedidoDB = parserPedidoDB(pedido.id, pedido.idCliente, status, itensPedidoParsed.itensPedidoDB, pedido.numeroPedido);
-            const response = await this.adapter.atualizarPedido(pedidoDB);
-            await this.adapter.deletarItensPedido(itensPedidoParsed.itensRemover);
-            return parserPedido(response);
-        }
+    async atualizarPedido(uuid: string, status: string, itensPedido: ItemPedido[]): Promise<Pedido | undefined> {
+        // const pedido = await this.adapter.buscarPedidoPorUuid(uuid);
+        // if (pedido) {
+        //     const itensPedidoParsed = parserItems(id, uuid, itensPedido, pedido.itensPedido);
+        //     const pedidoDB = parserPedidoDB(pedido.id, pedido.idCliente, status, itensPedidoParsed.itensPedidoDB, pedido.numeroPedido);
+        //     const response = await this.adapter.atualizarPedido(pedidoDB);
+        //     await this.adapter.deletarItensPedido(itensPedidoParsed.itensRemover);
+        //     return parserPedido(response);
+        // }
 
-        return pedido;
+        // return pedido;
+        return null
     }
 
-    async atualizarStatusPedido(id: string, status: string): Promise<Pedido | undefined> {
-        const pedido = await this.adapter.buscarPedidoPorId(id);
+    async atualizarStatusPedido(uuid: string, status: string): Promise<Pedido | undefined> {
+        const pedido = await this.adapter.buscarPedidoPorUuid(uuid);
         if (pedido) {
             pedido.status = status
             const response = await this.adapter.atualizarPedido(pedido);
