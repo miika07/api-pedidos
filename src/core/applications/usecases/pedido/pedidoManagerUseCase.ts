@@ -35,17 +35,15 @@ export default class PedidoManagerUseCase {
     }
 
     async atualizarPedido(uuid: string, status: string, itensPedido: ItemPedido[]): Promise<Pedido | undefined> {
-        // const pedido = await this.adapter.buscarPedidoPorUuid(uuid);
-        // if (pedido) {
-        //     const itensPedidoParsed = parserItems(id, uuid, itensPedido, pedido.itensPedido);
-        //     const pedidoDB = parserPedidoDB(pedido.id, pedido.idCliente, status, itensPedidoParsed.itensPedidoDB, pedido.numeroPedido);
-        //     const response = await this.adapter.atualizarPedido(pedidoDB);
-        //     await this.adapter.deletarItensPedido(itensPedidoParsed.itensRemover);
-        //     return parserPedido(response);
-        // }
+        const pedido = await this.adapter.buscarPedidoPorUuid(uuid);
+        if (pedido) {
+            const itensPedidoParsed = parserItems(itensPedido, pedido.itensPedido);
+            const pedidoDB = parserPedidoDB(pedido.id, pedido.uuid, pedido.idCliente, status, itensPedidoParsed.itensPedidoDB, pedido.numeroPedido);
+            const response = await this.adapter.atualizarPedido(pedidoDB);
+            return parserPedido(response);
+        }
 
-        // return pedido;
-        return null
+        return pedido;
     }
 
     async atualizarStatusPedido(uuid: string, status: string): Promise<Pedido | undefined> {

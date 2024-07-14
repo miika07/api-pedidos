@@ -16,7 +16,7 @@ export const parserItemPedido = (itemPedidoDB: ItemPedidoEntity): ItemPedido => 
     }
 }
 
-export const parserItems = (idPedido, itensPedido: ItemPedido[], itensPedidoDB: ItemPedidoEntity[]) => {
+export const parserItems = (itensPedido: ItemPedido[], itensPedidoDB: ItemPedidoEntity[]) => {
 
     let listaAtualizadaItens = [];
     itensPedido.forEach(item => {
@@ -33,7 +33,6 @@ export const parserItems = (idPedido, itensPedido: ItemPedido[], itensPedidoDB: 
             itemAtualizado.quantidade = item.quantidade;
         } else {
             itemAtualizado = new ItemPedidoEntity();
-            itemAtualizado.idPedido = idPedido.id;
             itemAtualizado.idProduto = item.idProduto;
             itemAtualizado.quantidade = item.quantidade;
         }
