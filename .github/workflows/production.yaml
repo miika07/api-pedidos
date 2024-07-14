@@ -11,22 +11,15 @@ jobs:
     runs-on: ubuntu-latest
     services:
       mongodbtest:
-        container_name: mongodbtest
         image: mongo:latest
-        environment:
+        env:
             MONGO_INITDB_ROOT_USERNAME: fiap
             MONGO_INITDB_ROOT_PASSWORD: password
             MONGO_INITDB_DATABASE: tech-challenge-fiap-test
-        restart: always
         ports:
             - "27017:27017"
         volumes:
             - ./init-mongo-test.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
-        healthcheck:
-            test: "echo 'db.getMongo().getDBNames().indexOf(\"tech-challenge-fiap-test\") >= 0' | mongosh --username fiap --password password --authenticationDatabase admin --quiet | grep -q 'true'"
-            interval: 20s
-            timeout: 10s
-            retries: 5
     steps:
       - uses: actions/checkout@v3
         with:
