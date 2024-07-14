@@ -30,7 +30,10 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '14'  # Ajuste a versão do Node.js conforme necessário
+          node-version: '18'  # Ajuste a versão do Node.js conforme necessário
+      
+      - name: Run npm install 
+        run: npm install
 
       - name: Wait for MongoDB
         run: |
