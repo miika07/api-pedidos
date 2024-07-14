@@ -58,13 +58,17 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y mongodb-mongosh
           mongosh --version
-          
+
       - name: Initialize MongoDB
         run: |
           mongosh --host localhost:27017 -u fiap -p password --authenticationDatabase admin <<EOF
             db = db.getSiblingDB('tech-challenge-fiap-test');
-            db.createUser({user: 'fiap',pwd: 'password',roles: [role: 'readWrite',db: 'tech-challenge-fiap-test'}]});
-            ddb.initialization.insertOne({
+            db.createUser({
+              user: 'fiap',
+              pwd: 'password',
+              roles: [{ role: 'readWrite', db: 'tech-challenge-fiap-test' }]
+            });
+            db.initialization.insertOne({
               message: 'Database has been initialized',
               timestamp: new Date()
             });
