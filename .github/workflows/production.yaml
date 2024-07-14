@@ -30,7 +30,7 @@ jobs:
         run: |
           echo "Waiting for MongoDB to be ready..."
           for i in {1..30}; do
-            if docker exec mongodb mongosh --username fiap --password password --authenticationDatabase admin --eval "db.adminCommand('ping')"; then
+            if docker exec mongodbtest mongosh --username fiap --password password --authenticationDatabase admin --eval "db.adminCommand('ping')"; then
               echo "MongoDB is ready!"
               break
             fi
