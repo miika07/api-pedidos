@@ -78,10 +78,6 @@ jobs:
     services:
       mongodbtest:
         image: mongo:latest
-        env:
-          MONGO_INITDB_ROOT_USERNAME: fiap
-          MONGO_INITDB_ROOT_PASSWORD: password
-          MONGO_INITDB_DATABASE: tech-challenge-fiap-test
         ports:
           - "27017:27017"
         options: >-
@@ -89,6 +85,8 @@ jobs:
           --health-interval=10s
           --health-timeout=5s
           --health-retries=30
+        volumes:
+          - ./init-mongo-test.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
 
     steps:
       - name: Checkout repository
@@ -120,6 +118,9 @@ jobs:
             sleep 5  # Aumentado o tempo de espera entre as tentativas para 5 segundos
           done
           echo "MongoDB is ready to accept connections."
+
+      - name: Run MongoDB Initialization Script
+        run: docker exec mongodbtest mongo --quiet /docker-entrypoint-initdb.d/init-mongo.js
 
       - name: Run tests and generate coverage
         run: npm run test
