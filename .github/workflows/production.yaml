@@ -62,8 +62,6 @@
 #           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 #           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
-
-
 name: Build
 
 on:
@@ -86,13 +84,11 @@ jobs:
           MONGO_INITDB_DATABASE: tech-challenge-fiap-test
         ports:
           - "27017:27017"
-        volumes:
-          - ./init-mongo-test.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
         options: >-
           --health-cmd="mongo --eval 'db.runCommand({ connectionStatus: 1 })'"
           --health-interval=10s
           --health-timeout=5s
-          --health-retries=30
+          --health-retries=30  # Aumentado o número de tentativas de verificação da saúde
 
     steps:
       - name: Checkout repository
@@ -111,16 +107,17 @@ jobs:
       - name: Wait for MongoDB
         run: |
           echo "Waiting for MongoDB..."
+          docker ps  # Exibe informações sobre os contêineres em execução para diagnóstico
           RETRY_COUNT=0
           MAX_RETRIES=30
-          until mongo --eval 'db.runCommand({ connectionStatus: 1 })' --quiet; do
+          until docker exec mongodbtest mongo --eval 'db.runCommand({ connectionStatus: 1 })' --quiet; do
             RETRY_COUNT=$((RETRY_COUNT + 1))
             if [ $RETRY_COUNT -ge $MAX_RETRIES ]; then
               echo "MongoDB did not become ready in time."
               exit 1
             fi
             echo "Still waiting for MongoDB... ($RETRY_COUNT/$MAX_RETRIES)"
-            sleep 2
+            sleep 5  # Aumentado o tempo de espera entre as tentativas para 5 segundos
           done
           echo "MongoDB is ready to accept connections."
 
