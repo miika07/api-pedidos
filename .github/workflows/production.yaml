@@ -15,11 +15,11 @@ jobs:
         image: mongo:4.4
         ports:
           - "27017:27017"
-        # options: >-
-        #   --health-cmd="mongosh --eval 'db.runCommand({ connectionStatus: 1 })'"
-        #   --health-interval=10s
-        #   --health-timeout=5s
-        #   --health-retries=30
+        options: >-
+          --health-cmd="mongosh --eval 'db.runCommand({ connectionStatus: 1 })'"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
 
     steps:
       - name: Checkout repository
@@ -37,19 +37,19 @@ jobs:
           echo "Waiting for MongoDB..."
           RETRY_COUNT=0
           MAX_RETRIES=30
-          until docker exec mongodbtest mongosh --eval 'db.runCommand({ connectionStatus: 1 })' --quiet; do
+          until CONTAINER_ID=$(docker ps --filter "ancestor=mongo:4.4" --filter "name=mongodbtest" --format "{{.ID}}"); do
             RETRY_COUNT=$((RETRY_COUNT + 1))
             if [ $RETRY_COUNT -ge $MAX_RETRIES ]; then
               echo "MongoDB did not become ready in time."
               exit 1
             fi
             echo "Still waiting for MongoDB... ($RETRY_COUNT/$MAX_RETRIES)"
-            sleep 5
+            sleep 10  # Aumente o tempo de espera para 10 segundos ou mais, se necessário
           done
           echo "MongoDB is ready to accept connections."
 
       - name: Run tests and generate coverage
-        run: npm install && npm run test
+        run: npm run test
 
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
