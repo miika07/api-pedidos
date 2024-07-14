@@ -4,7 +4,7 @@ export const AppDataSourceTest = new DataSource({
     type: "mongodb",
     host: "localhost",
     // host: "mongodbtest",
-    port: 27018,
+    port: 27017,
     username: "fiap",
     password: "password",
     database: "tech-challenge-fiap-test",

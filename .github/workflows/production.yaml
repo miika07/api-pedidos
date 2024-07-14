@@ -17,7 +17,7 @@ jobs:
             MONGO_INITDB_ROOT_PASSWORD: password
             MONGO_INITDB_DATABASE: tech-challenge-fiap-test
         ports:
-            - "27018:27017"
+            - "27017:27017"
         volumes:
             - ./init-mongo-test.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
         options: --health-cmd "mongo admin --eval 'db.stats().ok'"
