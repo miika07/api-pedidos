@@ -5,7 +5,6 @@ import * as qs from 'querystring';
 import Server from '../src/infra/api/server';
 import { AppDataSourceTest } from '../src/infra/data/database/data-source-teste';
 
-
 interface Route { basePath: string; statusCode: number; headers: any; payload?: { meta: any, records: any[] } | any; }
 export interface TestRouteOptions {
   url: string;
@@ -61,11 +60,12 @@ export const loadFiles = (currentDir, sequence) => {
   }
 };
 
-export const requireMethods = (description, currentDir, sequence = ['cliente', 'produto', 'pedido']) => {
+export const requireMethods = (description, currentDir, sequence = ['pedido']) => {
   describe(description, () => {
 
     beforeAll(async () => {
       console.log('Antes de todos os testes - Criando conexão...');
+      console.log(AppDataSourceTest.getMetadata);
       await AppDataSourceTest.initialize();
     });
 

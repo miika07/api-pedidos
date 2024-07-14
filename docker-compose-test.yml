@@ -1,0 +1,37 @@
+version: '3.7'
+services:
+    mongodbtest:
+        container_name: mongodbtest
+        image: mongo:latest
+        environment:
+            MONGO_INITDB_ROOT_USERNAME: fiap
+            MONGO_INITDB_ROOT_PASSWORD: password
+            MONGO_INITDB_DATABASE: tech-challenge-fiap-test
+        restart: always
+        ports:
+            - "27018:27017"
+        volumes:
+            - mongo_data_teste:/data/db
+            - ./init-mongo-test.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+        networks:
+            - tech-challenge-rede
+        healthcheck:
+            test: "echo 'db.getMongo().getDBNames().indexOf(\"tech-challenge-fiap-test\") >= 0' | mongosh --username fiap --password password --authenticationDatabase admin --quiet | grep -q 'true'"
+            interval: 20s
+            timeout: 10s
+            retries: 5
+    mongo-express:
+        image: mongo-express:latest
+        container_name: mongo-express
+        restart: always
+        ports:
+            - "8081:8081"
+        environment:
+            ME_CONFIG_MONGODB_URL: "mongodb://fiap:password@mongodbtest:27017"
+        networks:
+            - tech-challenge-rede
+volumes:
+  mongo_data_teste:
+networks:
+  tech-challenge-rede:
+    driver: bridge
