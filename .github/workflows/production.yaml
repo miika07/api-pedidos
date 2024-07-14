@@ -20,16 +20,15 @@ jobs:
             - "27017:27017"
         volumes:
             - ./init-mongo-test.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
-        options: --health-cmd "mongo admin --eval 'db.stats().ok'"
     steps:
-      - name: Wait for MongoDB to be ready
-        run: |
-          echo "Waiting for MongoDB to be ready..."
-          until mongo --eval "db.stats().ok" --username fiap --password password --authenticationDatabase admin --quiet; do
-            echo "MongoDB is not yet ready, waiting..."
-            sleep 5
-          done
-          echo "MongoDB is ready!"
+      # - name: Wait for MongoDB to be ready
+      #   run: |
+      #     echo "Waiting for MongoDB to be ready..."
+      #     until mongo --eval "db.stats().ok" --username fiap --password password --authenticationDatabase admin --quiet; do
+      #       echo "MongoDB is not yet ready, waiting..."
+      #       sleep 5
+      #     done
+      #     echo "MongoDB is ready!"
 
       - uses: actions/checkout@v3
         with:
