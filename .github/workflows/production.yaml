@@ -12,16 +12,19 @@ jobs:
     name: SonarCloud
     runs-on: ubuntu-latest
     services:
-      mongodbtest:
+      mongodb:
         image: mongo:latest
-        command: ["mongod", "--bind_ip_all", "--smallfiles"]
         ports:
           - "27017:27017"
         options: >-
           --health-cmd="mongo --eval 'db.runCommand({ connectionStatus: 1 })'"
           --health-interval=10s
           --health-timeout=5s
-          --health-retries=60  # Aumentado o número de tentativas de verificação da saúde
+          --health-retries=30
+        env:
+          MONGO_INITDB_ROOT_USERNAME: fiap
+          MONGO_INITDB_ROOT_PASSWORD: password
+          MONGO_INITDB_DATABASE: tech-challenge-fiap-test
         volumes:
           - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
 
@@ -34,7 +37,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '18'
+          node-version: '18'  # Ajuste a versão do Node.js conforme necessário
 
       - name: Install dependencies
         run: npm install
@@ -44,7 +47,7 @@ jobs:
           echo "Waiting for MongoDB..."
           RETRY_COUNT=0
           MAX_RETRIES=30
-          until docker exec mongodbtest mongo --eval 'db.runCommand({ connectionStatus: 1 })' --quiet; do
+          until docker exec mongodb mongo --eval 'db.runCommand({ connectionStatus: 1 })' --quiet; do
             RETRY_COUNT=$((RETRY_COUNT + 1))
             if [ $RETRY_COUNT -ge $MAX_RETRIES ]; then
               echo "MongoDB did not become ready in time."
@@ -56,7 +59,8 @@ jobs:
           echo "MongoDB is ready to accept connections."
 
       - name: Run MongoDB Initialization Script
-        run: docker exec mongodbtest mongo --quiet /docker-entrypoint-initdb.d/init-mongo.js
+        run: |
+          docker exec -i mongodb mongo < /docker-entrypoint-initdb.d/init-mongo.js
 
       - name: Run tests and generate coverage
         run: npm run test
