@@ -1,4 +1,4 @@
-name: Build
+name: Build and Test
 
 on:
   push:
@@ -8,25 +8,18 @@ on:
     types: [opened, synchronize, reopened]
 
 jobs:
-  sonarcloud:
-    name: SonarCloud
+  build-and-test:
     runs-on: ubuntu-latest
     services:
-      mongodb:
-        image: mongo:latest
+      mongodbtest:
+        image: mongo:4.4
         ports:
           - "27017:27017"
         options: >-
-          --health-cmd="mongo --eval 'db.runCommand({ connectionStatus: 1 })'"
+          --health-cmd="mongosh --eval 'db.runCommand({ connectionStatus: 1 })'"
           --health-interval=10s
           --health-timeout=5s
           --health-retries=30
-        env:
-          MONGO_INITDB_ROOT_USERNAME: fiap
-          MONGO_INITDB_ROOT_PASSWORD: password
-          MONGO_INITDB_DATABASE: tech-challenge-fiap-test
-        volumes:
-          - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
 
     steps:
       - name: Checkout repository
@@ -37,17 +30,14 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '18'  # Ajuste a versão do Node.js conforme necessário
-
-      - name: Install dependencies
-        run: npm install
+          node-version: '14'  # Ajuste a versão do Node.js conforme necessário
 
       - name: Wait for MongoDB
         run: |
           echo "Waiting for MongoDB..."
           RETRY_COUNT=0
           MAX_RETRIES=30
-          until docker exec mongodb mongo --eval 'db.runCommand({ connectionStatus: 1 })' --quiet; do
+          until docker exec mongodbtest mongosh --eval 'db.runCommand({ connectionStatus: 1 })' --quiet; do
             RETRY_COUNT=$((RETRY_COUNT + 1))
             if [ $RETRY_COUNT -ge $MAX_RETRIES ]; then
               echo "MongoDB did not become ready in time."
@@ -58,12 +48,8 @@ jobs:
           done
           echo "MongoDB is ready to accept connections."
 
-      - name: Run MongoDB Initialization Script
-        run: |
-          docker exec -i mongodb mongo < /docker-entrypoint-initdb.d/init-mongo.js
-
       - name: Run tests and generate coverage
-        run: npm run test
+        run: npm install && npm run test
 
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
