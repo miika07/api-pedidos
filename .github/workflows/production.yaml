@@ -1,67 +1,3 @@
-# name: Build
-# on:
-#   push:
-#     branches:
-#       - main
-#   pull_request:
-#     types: [opened, synchronize, reopened]
-# jobs:
-#   sonarcloud:
-#     name: SonarCloud
-#     runs-on: ubuntu-latest
-#     services:
-#       mongodbtest:
-#         image: mongo:latest
-#         env:
-#             MONGO_INITDB_ROOT_USERNAME: fiap
-#             MONGO_INITDB_ROOT_PASSWORD: password
-#             MONGO_INITDB_DATABASE: tech-challenge-fiap-test
-#         ports:
-#             - "27017:27017"
-#         volumes:
-#             - ./init-mongo-test.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
-#         options: >-
-#           --health-cmd="mongo --eval 'db.runCommand({ connectionStatus: 1 })'"
-#           --health-interval=10s
-#           --health-timeout=5s
-#           --health-retries=10
-#     steps:
-#       - uses: actions/checkout@v3
-#         with:
-#           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
-#       - name: Set up Node.js
-#         uses: actions/setup-node@v2
-#         with:
-#           node-version: '18'
-
-#       - name: Install dependencies
-#         run: npm install
-
-#       - name: Wait for MongoDB
-#         run: |
-#           echo "Waiting for MongoDB..."
-#           RETRY_COUNT=0
-#           MAX_RETRIES=30
-#           until mongo --eval 'db.runCommand({ connectionStatus: 1 })' --quiet; do
-#             RETRY_COUNT=$((RETRY_COUNT + 1))
-#             if [ $RETRY_COUNT -ge $MAX_RETRIES ]; then
-#               echo "MongoDB did not become ready in time."
-#               exit 1
-#             fi
-#             echo "Still waiting for MongoDB... ($RETRY_COUNT/$MAX_RETRIES)"
-#             sleep 2
-#           done
-#           echo "MongoDB is ready to accept connections."
-
-#       - name: Run tests and generate coverage
-#         run: npm run test
-     
-#       - name: SonarCloud Scan
-#         uses: SonarSource/sonarcloud-github-action@master
-#         env:
-#           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-
 name: Build
 
 on:
@@ -78,21 +14,22 @@ jobs:
     services:
       mongodbtest:
         image: mongo:latest
+        command: ["mongod", "--bind_ip_all", "--smallfiles"]
         ports:
           - "27017:27017"
         options: >-
           --health-cmd="mongo --eval 'db.runCommand({ connectionStatus: 1 })'"
           --health-interval=10s
           --health-timeout=5s
-          --health-retries=30
+          --health-retries=60  # Aumentado o número de tentativas de verificação da saúde
         volumes:
-          - ./init-mongo-test.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+          - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
         with:
-          fetch-depth: 0  # Disable shallow clones for a better analysis relevance
+          fetch-depth: 0
 
       - name: Set up Node.js
         uses: actions/setup-node@v2
@@ -105,7 +42,6 @@ jobs:
       - name: Wait for MongoDB
         run: |
           echo "Waiting for MongoDB..."
-          docker ps  # Exibe informações sobre os contêineres em execução para diagnóstico
           RETRY_COUNT=0
           MAX_RETRIES=30
           until docker exec mongodbtest mongo --eval 'db.runCommand({ connectionStatus: 1 })' --quiet; do
@@ -115,7 +51,7 @@ jobs:
               exit 1
             fi
             echo "Still waiting for MongoDB... ($RETRY_COUNT/$MAX_RETRIES)"
-            sleep 5  # Aumentado o tempo de espera entre as tentativas para 5 segundos
+            sleep 5
           done
           echo "MongoDB is ready to accept connections."
 
