@@ -21,10 +21,10 @@ jobs:
         volumes:
             - ./init-mongo-test.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
         options: >-
-                --health-cmd mongo
-                --health-interval 10s
-                --health-timeout 5s
-                --health-retries 5
+          --health-cmd="mongo --eval 'db.runCommand({ connectionStatus: 1 })'"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
     steps:
       - uses: actions/checkout@v3
         with:
@@ -36,6 +36,22 @@ jobs:
 
       - name: Install dependencies
         run: npm install
+
+      - name: Wait for MongoDB
+        run: |
+          echo "Waiting for MongoDB..."
+          RETRY_COUNT=0
+          MAX_RETRIES=30
+          until mongo --eval 'db.runCommand({ connectionStatus: 1 })' --quiet; do
+            RETRY_COUNT=$((RETRY_COUNT + 1))
+            if [ $RETRY_COUNT -ge $MAX_RETRIES ]; then
+              echo "MongoDB did not become ready in time."
+              exit 1
+            fi
+            echo "Still waiting for MongoDB... ($RETRY_COUNT/$MAX_RETRIES)"
+            sleep 2
+          done
+          echo "MongoDB is ready to accept connections."
 
       - name: Run tests and generate coverage
         run: npm run test
