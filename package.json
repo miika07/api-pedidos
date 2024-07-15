@@ -15,7 +15,7 @@
     "migration:create": "typeorm-ts-node-commonjs migration:create src/infra/data/database/migrations/Migration",
     "build:tsc": "rm -rf ./dist && mkdir dist && tsc -p ./tsconfig.json",
     "test": "cross-env NODE_ENV=test  && jest --detectOpenHandles --coverage --forceExit -u",
-    "coverage:check": "cross-env NODE_ENV=test  && jest --detectOpenHandles --coverage --forceExit -u --coverageThreshold '{\"global\": {\"branches\": 10, \"functions\": 10, \"lines\": 10, \"statements\": 10}}'"
+    "coverage:check": "cross-env NODE_ENV=test  && jest --detectOpenHandles --coverage --coverageThreshold '{\"global\": {\"branches\": 10, \"functions\": 10, \"lines\": 10, \"statements\": 10}}'"
   },
   "author": "Camila Couto e Melina Carniel",
   "license": "ISC",
