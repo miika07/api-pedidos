@@ -76,16 +76,10 @@ jobs:
 
       - name: Run tests and generate coverage
         run: |
-          npm run test
+          npm run coverage:check
 
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-
-      - name: Quality Gate Check
-        id: quality_gate
-        uses: SonarSource/sonarcloud-quality-gate-action@master
-        env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
