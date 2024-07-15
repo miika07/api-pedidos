@@ -1,7 +1,8 @@
 import { route, TestRouteOptions } from '../../common';
 import { v4 as uuidv4 } from 'uuid';
 
-it('[POST] Adicionar um pedido - 200', async () => {
+
+  it('[POST] Adicionar um pedido - 200', async () => {
     //adicionando pedido
     const paramsPedido: TestRouteOptions = {
         method: 'POST',
@@ -25,6 +26,32 @@ it('[POST] Adicionar um pedido - 200', async () => {
       const responsePedido = await route(paramsPedido);
       expect(responsePedido.statusCode).toBe(200);
       expect(responsePedido.payload.itensPedido).toHaveLength(2)
+  });
+
+  it('[POST] Checkout do pedido - 200', async () => {
+    //adicionando pedido
+    const paramsPedido: TestRouteOptions = {
+        method: 'POST',
+        url: 'api/checkout-pedido',
+        basePath: '',
+        payload: {
+          cliente: uuidv4(),
+          status: "RECEBIDO",
+          itensPedido: [
+            {
+                idProduto: uuidv4(),
+                quantidade: 1
+            },
+            {
+                idProduto: uuidv4(),
+                quantidade: 1
+            }
+          ],
+          statusPagamento: 'APROVADO'
+        }
+      };
+      const responsePedido = await route(paramsPedido);
+      expect(responsePedido.statusCode).toBe(200);
   });
 
   it('[POST] Erro ao adicionar um pedido vazio- 400', async () => {

@@ -60,7 +60,7 @@ export const loadFiles = (currentDir, sequence) => {
   }
 };
 
-export const requireMethods = (description, currentDir, sequence = ['pedido', 'parsers']) => {
+export const requireMethods = (description, currentDir, sequence = ['pedido']) => {
   describe(description, () => {
 
     beforeAll(async () => {
