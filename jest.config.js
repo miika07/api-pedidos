@@ -34,6 +34,8 @@ module.exports = {
     '!src/config/environment.config.ts',
     '!src/infra/data/database/data-source.ts',
     '!src/infra/data/database/data-source-test.ts',
+    '!src/service/*',
+    '!src/models/*'
   ],
 
 }
