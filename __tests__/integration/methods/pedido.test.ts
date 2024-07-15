@@ -27,7 +27,7 @@ import { v4 as uuidv4 } from 'uuid';
 //       expect(responsePedido.payload.itensPedido).toHaveLength(2)
 //   });
 
-  it('[POST] Erro ao adicionar um pedido vazio- 400', async (done) => {
+  it('[POST] Erro ao adicionar um pedido vazio- 400', async () => {
     //adicionando pedido
     const paramsPedido: TestRouteOptions = {
         method: 'POST',
@@ -42,7 +42,6 @@ import { v4 as uuidv4 } from 'uuid';
       const responsePedido = await route(paramsPedido);
       expect(responsePedido.statusCode).toBe(400);
       expect(responsePedido.payload.error).toBe('Bad Request');
-      done();
   });
 
   // it('[GET] Buscar todos os pedidos - 200', async () => {
