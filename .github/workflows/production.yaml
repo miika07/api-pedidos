@@ -76,7 +76,7 @@ jobs:
 
       - name: Run tests and generate coverage
         run: |
-          npm run coverage:check
+          npm run test
 
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
