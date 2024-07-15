@@ -39,7 +39,7 @@ jobs:
           echo "Waiting for MongoDB..."
           RETRY_COUNT=0
           MAX_RETRIES=30
-          until CONTAINER_ID=$(docker ps --filter "ancestor=mongo:4.4" --filter "name=mongodbtest" --format "{{.ID}}"); do
+          until CONTAINER_ID=$(docker ps --filter "name=mongodbtest" --format "{{.ID}}"); do
             RETRY_COUNT=$((RETRY_COUNT + 1))
             if [ $RETRY_COUNT -ge $MAX_RETRIES ]; then
               echo "MongoDB did not become ready in time."
