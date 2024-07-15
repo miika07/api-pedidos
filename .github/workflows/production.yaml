@@ -1,47 +1,82 @@
-name: Build
+name: Build and Test
+
 on:
   push:
     branches:
       - main
   pull_request:
     types: [opened, synchronize, reopened]
+
 jobs:
-  sonarcloud:
-    name: SonarCloud
+  build-and-test:
     runs-on: ubuntu-latest
     services:
       mongodbtest:
-        container_name: mongodbtest
         image: mongo:latest
-        environment:
-            MONGO_INITDB_ROOT_USERNAME: fiap
-            MONGO_INITDB_ROOT_PASSWORD: password
-            MONGO_INITDB_DATABASE: tech-challenge-fiap-test
-        restart: always
         ports:
-            - "27017:27017"
-        volumes:
-            - ./init-mongo-test.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
-        healthcheck:
-            test: "echo 'db.getMongo().getDBNames().indexOf(\"tech-challenge-fiap-test\") >= 0' | mongosh --username fiap --password password --authenticationDatabase admin --quiet | grep -q 'true'"
-            interval: 20s
-            timeout: 10s
-            retries: 5
+          - "27017:27017"
+        env:
+          MONGO_INITDB_ROOT_USERNAME: fiap
+          MONGO_INITDB_ROOT_PASSWORD: password
+          MONGO_INITDB_DATABASE: tech-challenge-fiap-test
+
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v3
         with:
-          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+          fetch-depth: 0
+
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '18'
-
-      - name: Install dependencies
+          node-version: '18'  # Ajuste a versão do Node.js conforme necessário
+      
+      - name: Run npm install 
         run: npm install
+
+      - name: Wait for MongoDB
+        run: |
+          echo "Waiting for MongoDB..."
+          RETRY_COUNT=0
+          MAX_RETRIES=30
+          until CONTAINER_ID=$(docker ps --filter "ancestor=mongo:4.4" --filter "name=mongodbtest" --format "{{.ID}}"); do
+            RETRY_COUNT=$((RETRY_COUNT + 1))
+            if [ $RETRY_COUNT -ge $MAX_RETRIES ]; then
+              echo "MongoDB did not become ready in time."
+              exit 1
+            fi
+            echo "Still waiting for MongoDB... ($RETRY_COUNT/$MAX_RETRIES)"
+            sleep 10  # Aumente o tempo de espera para 10 segundos ou mais, se necessário
+          done
+          echo "MongoDB is ready to accept connections."
+      
+      - name: Install mongosh
+        run: |
+          sudo apt-get install gnupg
+          wget -qO- https://www.mongodb.org/static/pgp/server-7.0.asc | sudo tee /etc/apt/trusted.gpg.d/server-7.0.asc
+          echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/7.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-7.0.list
+          sudo apt-get update
+          sudo apt-get install -y mongodb-mongosh
+          mongosh --version
+
+      - name: Initialize MongoDB
+        run: |
+          mongosh --host localhost:27017 -u fiap -p password --authenticationDatabase admin <<EOF
+            db = db.getSiblingDB('tech-challenge-fiap-test');
+            db.createUser({
+              user: 'fiap',
+              pwd: 'password',
+              roles: [{ role: 'readWrite', db: 'tech-challenge-fiap-test' }]
+            });
+            db.initialization.insertOne({
+              message: 'Database has been initialized',
+              timestamp: new Date()
+            });
+          EOF
 
       - name: Run tests and generate coverage
         run: npm run test
-     
+
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
         env:
