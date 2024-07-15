@@ -9,10 +9,10 @@ services:
             MONGO_INITDB_DATABASE: tech-challenge-fiap-test
         restart: always
         ports:
-            - "27018:27017"
+            - "27017:27017"
         volumes:
             - mongo_data_teste:/data/db
-            # - ./init-mongo-test.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+            - ./init-mongo-test.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
         networks:
             - tech-challenge-rede
         healthcheck:

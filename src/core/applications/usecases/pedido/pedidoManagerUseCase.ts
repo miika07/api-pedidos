@@ -1,6 +1,6 @@
 import { PedidoRepositoryAdapter } from "../../../../infra/adapter/pedido/pedidoRepositoryAdapter";
 import { PedidoEntity } from "../../../domain/entities/pedidos";
-import { parserPedidosComDescricao, parserCheckoutPedido, parserItems, parserNewPedidoDB, parserPedido, parserPedidoDB, parserPedidos } from "../../adapters/pedido";
+import { parserPedidosComQuantidade, parserCheckoutPedido, parserItems, parserNewPedidoDB, parserPedido, parserPedidoDB, parserPedidos } from "../../adapters/pedido";
 import { ItemPedido } from "../../models/itensPedido";
 import { CheckoutPedidoResponse, Pedido, Status } from "../../models/pedido";
 
@@ -62,7 +62,7 @@ export default class PedidoManagerUseCase {
 
     async buscarPedidosNaoFinalizados(): Promise<Pedido[]> {
         const response = await this.adapter.buscarPedidosNaoFinalizados();
-        const pedidosComParse = parserPedidosComDescricao(response);
+        const pedidosComParse = parserPedidosComQuantidade(response);
 
         const listaPronto = pedidosComParse.filter(objeto => objeto.status === Status.PRONTO);
         const listaEmPreparacao = pedidosComParse.filter(objeto => objeto.status === Status.EM_PREPARACAO);
