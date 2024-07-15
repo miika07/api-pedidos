@@ -3,8 +3,7 @@ import { DataSource } from "typeorm";
 export const AppDataSourceTest = new DataSource({
     type: "mongodb",
     host: "localhost",
-    // host: "mongodbtest",
-    port: 27017,
+    port: 27018,
     username: "fiap",
     password: "password",
     database: "tech-challenge-fiap-test",
