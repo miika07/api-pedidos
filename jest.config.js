@@ -27,5 +27,13 @@ module.exports = {
     'infra',
     'plugins'
   ],
+  collectCoverageFrom: [
+    'src/**/*.ts',
+    '!src/**/index.ts',
+    '!src/**/*.(spec|test).ts',
+    '!src/config/environment.config.ts',
+    '!src/infra/data/database/data-source.ts',
+    '!src/infra/data/database/data-source-test.ts',
+  ],
 
 }
