@@ -10,14 +10,13 @@ services:
             MONGO_INITDB_DATABASE: tech-challenge-fiap
         restart: always
         ports:
-            - "27018:27017"
+            - "27017:27017"
         volumes:
             - mongo_data:/data/db
             - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
         networks:
             - tech-challenge-rede
         healthcheck:
-            # test: "echo 'db.runCommand({ ping: 1 })' | mongosh --username fiap --password password --authenticationDatabase admin --quiet"
             test: "echo 'db.getMongo().getDBNames().indexOf(\"tech-challenge-fiap\") >= 0' | mongosh --username fiap --password password --authenticationDatabase admin --quiet | grep -q 'true'"
             interval: 20s
             timeout: 10s
@@ -27,7 +26,7 @@ services:
         container_name: mongo-express
         restart: always
         ports:
-            - "8081:8081"
+            - "8082:8081"
         environment:
             ME_CONFIG_MONGODB_ADMINUSERNAME: fiap
             ME_CONFIG_MONGODB_ADMINPASSWORD: password

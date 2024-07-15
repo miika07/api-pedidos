@@ -9,15 +9,15 @@ it('[POST] Adicionar um pedido - 200', async () => {
         basePath: '',
         payload: {
           cliente: uuidv4(),
-          status: "Recebido",
+          status: "RECEBIDO",
           itensPedido: [
             {
                 idProduto: uuidv4(),
-                quantidade: 3
+                quantidade: 1
             },
             {
                 idProduto: uuidv4(),
-                quantidade: 3
+                quantidade: 1
             }
           ]
         }
@@ -45,6 +45,29 @@ it('[POST] Adicionar um pedido - 200', async () => {
   });
 
   it('[GET] Buscar todos os pedidos - 200', async () => {
+    //adicionando pedido para poder buscar
+    const paramsPedido: TestRouteOptions = {
+      method: 'POST',
+      url: 'api/pedido',
+      basePath: '',
+      payload: {
+        cliente: uuidv4(),
+        status: "RECEBIDO",
+        itensPedido: [
+          {
+              idProduto: uuidv4(),
+              quantidade: 1
+          },
+          {
+              idProduto: uuidv4(),
+              quantidade: 1
+          }
+        ]
+      }
+    };
+    const responsePedido = await route(paramsPedido);
+    expect(responsePedido.statusCode).toBe(200);
+
     const params: TestRouteOptions = {
       method: 'GET',
       url: 'api/pedidos',
@@ -53,48 +76,77 @@ it('[POST] Adicionar um pedido - 200', async () => {
     
     const { payload, statusCode } = await route(params);
     expect(statusCode).toBe(200);
-    expect(payload).toHaveLength(1);
+    expect(payload.length).toBeGreaterThanOrEqual(1);
   });
 
   it('[GET] Buscar todos os pedidos por status - 200', async () => {
+    //adicionando pedido para poder buscar
+    const paramsPedido: TestRouteOptions = {
+      method: 'POST',
+      url: 'api/pedido',
+      basePath: '',
+      payload: {
+        cliente: uuidv4(),
+        status: "RECEBIDO",
+        itensPedido: [
+          {
+              idProduto: uuidv4(),
+              quantidade: 2
+          }
+        ]
+      }
+    };
+    const responsePedido = await route(paramsPedido);
+    expect(responsePedido.statusCode).toBe(200);
+
     const params: TestRouteOptions = {
       method: 'GET',
-      url: 'api/pedido/status/Recebido',
+      url: 'api/pedido/status/RECEBIDO',
       basePath: ''
     };
     
-    const { payload, statusCode } = await route(params);
-    expect(statusCode).toBe(200);
-    expect(payload).toHaveLength(1);
+    const responseTest = await route(params);
+    expect(responseTest.statusCode).toBe(200);
+    expect(responseTest.payload.length).toBeGreaterThanOrEqual(1);
   });
 
   it('[GET] Erro ao buscar todos os pedidos por status - 404', async () => {
     const params: TestRouteOptions = {
       method: 'GET',
-      url: 'api/pedido/status/Finalizado',
+      url: 'api/pedido/status/FINALIZADO',
       basePath: ''
     };
-    
     const { payload, statusCode } = await route(params);
     expect(statusCode).toBe(404);
   });
 
   it('[GET] Buscar pedido por ID - 200', async () => {
-    const params: TestRouteOptions = {
-      method: 'GET',
-      url: 'api/pedidos',
-      basePath: ''
+    //adicionando pedido para poder buscar
+    const paramsPedido: TestRouteOptions = {
+      method: 'POST',
+      url: 'api/pedido',
+      basePath: '',
+      payload: {
+        cliente: uuidv4(),
+        status: "RECEBIDO",
+        itensPedido: [
+          {
+              idProduto: uuidv4(),
+              quantidade: 2
+          }
+        ]
+      }
     };
+    const responsePedido = await route(paramsPedido);
+    const uuidPedido = responsePedido.payload.uuid;
+    expect(responsePedido.statusCode).toBe(200);
     
-    const response = await route(params);
-    expect(response.statusCode).toBe(200);
-
     const paramsId: TestRouteOptions = {
       method: 'GET',
-      url: `api/pedido/${response.payload[0].id}`,
+      url: `api/pedido/${uuidPedido}`,
       basePath: '',
       query: {
-        id:response.payload.id
+        uuid:uuidPedido
       }
     };
     const { payload, statusCode } = await route(paramsId);
@@ -103,61 +155,77 @@ it('[POST] Adicionar um pedido - 200', async () => {
   });
 
   it('[PUT] Atualizar pedido por ID - 200', async () => {
-    //buscar pedido
-    const params: TestRouteOptions = {
-      method: 'GET',
-      url: 'api/pedidos',
-      basePath: ''
+    //Adicionando pedido
+    const paramsPedido: TestRouteOptions = {
+      method: 'POST',
+      url: 'api/pedido',
+      basePath: '',
+      payload: {
+        cliente: uuidv4(),
+        status: "RECEBIDO",
+        itensPedido: [
+          {
+              idProduto: uuidv4(),
+              quantidade: 6
+          }
+        ]
+      }
     };
-    
-    const response = await route(params);
-    expect(response.statusCode).toBe(200);
-   
+    const responsePedido = await route(paramsPedido);
+    expect(responsePedido.statusCode).toBe(200);
+
+    let payloadPedido = responsePedido.payload;
+    payloadPedido.itensPedido[0].quantidade = 5;
+    payloadPedido.status = "PRONTO";
+
     //Atualizar o pedido
     const paramsId: TestRouteOptions = {
       method: 'PUT',
-      url: `api/pedido/${response.payload[0].id}`,
+      url: `api/pedido/${responsePedido.payload.uuid}`,
       basePath: '',
       payload: {
-        cliente: response.payload[0].idCliente.id,
-        status: 'Pronto',
-        itensPedido:[{
-            idProduto: response.payload[0].itensPedido[0].idProduto.id,
-            quantidade: 2
-        },
-        {
-            idProduto: response.payload[0].itensPedido[1].idProduto.id,
-            quantidade: 2
-        }]
+        cliente: payloadPedido.idCliente,
+        status: payloadPedido.status,
+        itensPedido: payloadPedido.itensPedido
       }
     };
-    const { payload, statusCode } = await route(paramsId);
-    expect(statusCode).toBe(200);
-    expect(payload.itensPedido).toHaveLength(2);
-    expect(payload.status).toBe('Pronto');
+    const resultAtualizar = await route(paramsId);
+    expect(resultAtualizar.statusCode).toBe(200);
+    expect(resultAtualizar.payload.itensPedido[0].quantidade).toEqual(5);
+
+    expect(resultAtualizar.payload.status).toBe('Pronto');
   });
 
   it('[PUT] Remover item do pedido - 200', async () => {
-    //buscar pedido
-    const params: TestRouteOptions = {
-      method: 'GET',
-      url: 'api/pedidos',
-      basePath: ''
+    //Adicionando pedido
+    const paramsPedido: TestRouteOptions = {
+      method: 'POST',
+      url: 'api/pedido',
+      basePath: '',
+      payload: {
+        cliente: uuidv4(),
+        status: "RECEBIDO",
+        itensPedido: [
+          {
+              idProduto: uuidv4(),
+              quantidade: 6
+          }
+        ]
+      }
     };
-    
-    const response = await route(params);
-    expect(response.statusCode).toBe(200);
+    const responsePedido = await route(paramsPedido);
+    expect(responsePedido.statusCode).toBe(200);
    
     //Atualizar o pedido
     const paramsId: TestRouteOptions = {
       method: 'PUT',
-      url: `api/pedido/${response.payload[0].id}`,
+      url: `api/pedido/${responsePedido.payload.uuid}`,
       basePath: '',
       payload: {
-        cliente: response.payload[0].idCliente.id,
-        status: 'Pronto',
+        cliente: responsePedido.payload.idCliente,
+        status: 'PRONTO',
         itensPedido:[{
-            idProduto: response.payload[0].itensPedido[0].idProduto.id,
+            idProduto: responsePedido.payload.itensPedido[0].idProduto,
             quantidade: 3
         }]
       }
@@ -170,24 +238,44 @@ it('[POST] Adicionar um pedido - 200', async () => {
   });
 
   it('[DELETE] Deletar pedido por ID - 204', async () => {
-    const params: TestRouteOptions = {
-      method: 'GET',
-      url: 'api/pedidos',
-      basePath: ''
+    //adicionando pedido para poder buscar
+    const paramsPedido: TestRouteOptions = {
+      method: 'POST',
+      url: 'api/pedido',
+      basePath: '',
+      payload: {
+        cliente: uuidv4(),
+        status: "RECEBIDO",
+        itensPedido: [
+          {
+              idProduto: uuidv4(),
+              quantidade: 2
+          }
+        ]
+      }
     };
-    
-    const response = await route(params);
-    expect(response.statusCode).toBe(200);
+    const responsePedido = await route(paramsPedido);
+    const uuidPedido = responsePedido.payload.uuid;
+    expect(responsePedido.statusCode).toBe(200);
 
     const paramsId: TestRouteOptions = {
       method: 'DELETE',
-      url: `api/pedido/${response.payload[0].id}`,
+      url: `api/pedido/${uuidPedido}`,
       basePath: ''
     };
-    const { statusCode } = await route(paramsId);
-    expect(statusCode).toBe(204);
+    const result = await route(paramsId);
+    console.log(result);
+    expect(result.statusCode).toBe(204);
 
-    const responseAfter = await route(params);
-    expect(responseAfter.statusCode).toBe(200);
-    expect(responseAfter.payload).toHaveLength(0);
+    const paramsGet: TestRouteOptions = {
+      method: 'GET',
+      url: `api/pedido/${uuidPedido}`,
+      basePath: '',
+      query: {
+        uuid:uuidPedido
+      }
+    };
+
+    const responseAfter = await route(paramsGet);
+    expect(responseAfter.statusCode).toBe(404);
   });

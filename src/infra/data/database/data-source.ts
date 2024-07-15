@@ -2,8 +2,8 @@ import { DataSource } from "typeorm";
 
 export const AppDataSource = new DataSource({
     type: "mongodb",
-    // host: "localhost",
-    host: "mongodb",
+    host: "localhost",
+    // host: "mongodb",
     port: 27017,
     username: "fiap",
     password: "password",

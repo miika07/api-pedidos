@@ -40,8 +40,8 @@ export class PedidoRepositoryAdapter implements PedidoRepositoryInterface {
         return this.pedidoRepository.save(pedido);
     }
 
-    async deletarPedido(id: string): Promise<boolean> {
-        const result = await this.pedidoRepository.delete(id);
+    async deletarPedido(uuid: string): Promise<boolean> {
+        const result = await this.pedidoRepository.delete({uuid});
         return result.affected !== undefined && result.affected > 0;
     }
 
