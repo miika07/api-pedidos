@@ -75,7 +75,9 @@ jobs:
           EOF
 
       - name: Run tests and generate coverage
-        run: npm run test
+        run: |
+          npm run test -- --coverage
+          npm run coverage:check
 
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
