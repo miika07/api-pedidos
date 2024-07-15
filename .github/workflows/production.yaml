@@ -76,8 +76,22 @@ jobs:
 
       - name: Run tests and generate coverage
         run: |
-          npm run test -- --coverage
           npm run coverage:check
+
+      - name: Post coverage result comment
+        if: failure()
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+            const issue_number = context.issue.number;
+            const coverage = `Cobertura dos testes falhou. A cobertura mínima exigida é de 80%.`;
+            github.issues.createComment({
+              owner,
+              repo,
+              issue_number,
+              body: coverage
+            })
 
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
