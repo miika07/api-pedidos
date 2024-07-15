@@ -6,7 +6,7 @@ import { v4 as uuidv4 } from 'uuid';
     //adicionando pedido
     const paramsPedido: TestRouteOptions = {
         method: 'POST',
-        url: 'api/pedido',
+        url: 'api/pedidos',
         basePath: '',
         payload: {
           cliente: uuidv4(),
@@ -32,7 +32,7 @@ import { v4 as uuidv4 } from 'uuid';
     //adicionando pedido
     const paramsPedido: TestRouteOptions = {
         method: 'POST',
-        url: 'api/checkout-pedido',
+        url: 'api/pedidos/checkout-pedido',
         basePath: '',
         payload: {
           cliente: uuidv4(),
@@ -58,7 +58,7 @@ import { v4 as uuidv4 } from 'uuid';
     //adicionando pedido
     const paramsPedido: TestRouteOptions = {
         method: 'POST',
-        url: 'api/pedido',
+        url: 'api/pedidos',
         basePath: '',
         payload: {
           cliente: uuidv4(),
@@ -75,7 +75,7 @@ import { v4 as uuidv4 } from 'uuid';
     //adicionando pedido para poder buscar
     const paramsPedido: TestRouteOptions = {
       method: 'POST',
-      url: 'api/pedido',
+      url: 'api/pedidos',
       basePath: '',
       payload: {
         cliente: uuidv4(),
@@ -110,7 +110,7 @@ import { v4 as uuidv4 } from 'uuid';
     //adicionando pedido para poder buscar
     const paramsPedido: TestRouteOptions = {
       method: 'POST',
-      url: 'api/pedido',
+      url: 'api/pedidos',
       basePath: '',
       payload: {
         cliente: uuidv4(),
@@ -128,7 +128,7 @@ import { v4 as uuidv4 } from 'uuid';
 
     const params: TestRouteOptions = {
       method: 'GET',
-      url: 'api/pedido/status/RECEBIDO',
+      url: 'api/pedidos/status/RECEBIDO',
       basePath: ''
     };
     
@@ -140,7 +140,7 @@ import { v4 as uuidv4 } from 'uuid';
   it('[GET] Erro ao buscar todos os pedidos por status - 404', async () => {
     const params: TestRouteOptions = {
       method: 'GET',
-      url: 'api/pedido/status/FINALIZADO',
+      url: 'api/pedidos/status/FINALIZADO',
       basePath: ''
     };
     const { payload, statusCode } = await route(params);
@@ -151,7 +151,7 @@ import { v4 as uuidv4 } from 'uuid';
     //adicionando pedido para poder buscar
     const paramsPedido: TestRouteOptions = {
       method: 'POST',
-      url: 'api/pedido',
+      url: 'api/pedidos',
       basePath: '',
       payload: {
         cliente: uuidv4(),
@@ -170,7 +170,7 @@ import { v4 as uuidv4 } from 'uuid';
     
     const paramsId: TestRouteOptions = {
       method: 'GET',
-      url: `api/pedido/${uuidPedido}`,
+      url: `api/pedidos/${uuidPedido}`,
       basePath: '',
       query: {
         uuid:uuidPedido
@@ -185,7 +185,7 @@ import { v4 as uuidv4 } from 'uuid';
     //Adicionando pedido
     const paramsPedido: TestRouteOptions = {
       method: 'POST',
-      url: 'api/pedido',
+      url: 'api/pedidos',
       basePath: '',
       payload: {
         cliente: uuidv4(),
@@ -208,7 +208,7 @@ import { v4 as uuidv4 } from 'uuid';
     //Atualizar o pedido
     const paramsId: TestRouteOptions = {
       method: 'PUT',
-      url: `api/pedido/${responsePedido.payload.uuid}`,
+      url: `api/pedidos/${responsePedido.payload.uuid}`,
       basePath: '',
       payload: {
         cliente: payloadPedido.idCliente,
@@ -227,7 +227,7 @@ import { v4 as uuidv4 } from 'uuid';
     //Adicionando pedido
     const paramsPedido: TestRouteOptions = {
       method: 'POST',
-      url: 'api/pedido',
+      url: 'api/pedidos',
       basePath: '',
       payload: {
         cliente: uuidv4(),
@@ -246,7 +246,7 @@ import { v4 as uuidv4 } from 'uuid';
     //Atualizar o pedido
     const paramsId: TestRouteOptions = {
       method: 'PUT',
-      url: `api/pedido/${responsePedido.payload.uuid}`,
+      url: `api/pedidos/${responsePedido.payload.uuid}`,
       basePath: '',
       payload: {
         cliente: responsePedido.payload.idCliente,
@@ -268,7 +268,7 @@ import { v4 as uuidv4 } from 'uuid';
     //adicionando pedido para poder buscar
     const paramsPedido: TestRouteOptions = {
       method: 'POST',
-      url: 'api/pedido',
+      url: 'api/pedidos',
       basePath: '',
       payload: {
         cliente: uuidv4(),
@@ -287,7 +287,7 @@ import { v4 as uuidv4 } from 'uuid';
 
     const paramsId: TestRouteOptions = {
       method: 'DELETE',
-      url: `api/pedido/${uuidPedido}`,
+      url: `api/pedidos/${uuidPedido}`,
       basePath: ''
     };
     const result = await route(paramsId);
@@ -296,7 +296,7 @@ import { v4 as uuidv4 } from 'uuid';
 
     const paramsGet: TestRouteOptions = {
       method: 'GET',
-      url: `api/pedido/${uuidPedido}`,
+      url: `api/pedidos/${uuidPedido}`,
       basePath: '',
       query: {
         uuid:uuidPedido
