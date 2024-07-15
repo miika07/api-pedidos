@@ -146,7 +146,7 @@
 							"raw": "{\n    \"cliente\": \"{{idCliente}}\",\n    \"status\": \"RECEBIDO\",\n    \"itensPedido\": [\n        {\n            \"idProduto\": \"0688c7bd-daac-4db6-a52b-c6cbcb3e1b85\",\n            \"quantidade\": 1\n        },\n        {\n            \"idProduto\": \"342e139f-3c3b-450d-b2b2-b18db17d9be6\",\n            \"quantidade\": 1\n        },\n        {\n            \"idProduto\": \"7f1152f7-66bc-44d9-aae6-4c0161194c59\",\n            \"quantidade\": 1\n        }\n    ]\n}"
 						},
 						"url": {
-							"raw": "http://localhost:3000/api/pedido",
+							"raw": "http://localhost:3000/api/pedidos",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -196,7 +196,7 @@
 							}
 						],
 						"url": {
-							"raw": "http://localhost:3000/api/pedido/status/FINALIZADO",
+							"raw": "http://localhost:3000/api/pedidos/status/FINALIZADO",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -300,7 +300,7 @@
 							"raw": "{\n    \"cliente\": \"{{idCliente}}\",\n    \"status\": \"PENDENTE_PAGAMENTO\",\n    \"itensPedido\": [\n        {\n            \"idProduto\": \"0688c7bd-daac-4db6-a52b-c6cbcb3e1b85\",\n            \"quantidade\": 1\n        },\n        {\n            \"idProduto\": \"342e139f-3c3b-450d-b2b2-b18db17d9be6\",\n            \"quantidade\": 1\n        },\n        {\n            \"idProduto\": \"7f1152f7-66bc-44d9-aae6-4c0161194c59\",\n            \"quantidade\": 1\n        }\n    ],\n    \"statusPagamento\": \"EM_ANALISE\"\n}"
 						},
 						"url": {
-							"raw": "http://localhost:3000/api/checkout-pedido",
+							"raw": "http://localhost:3000/api/pedidos/checkout-pedido",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -404,7 +404,7 @@
 							"raw": "{\n  \"status\": \"EM_PREPARACAO\"\n}"
 						},
 						"url": {
-							"raw": "http://localhost:3000/api/pedido/atualizar-status/{{idPedido}}",
+							"raw": "http://localhost:3000/api/pedidos/atualizar-status/{{idPedido}}",
 							"protocol": "http",
 							"host": [
 								"localhost"

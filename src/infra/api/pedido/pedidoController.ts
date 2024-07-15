@@ -41,7 +41,7 @@ export default class PedidoController {
             }
             return h.response({ error: 'Not found' }).code(404);
         } catch (error) {
-            Logger.error(`Error in GET /pedido/${request.params.id}: ${error.message}`);
+            Logger.error(`Error in GET /pedidos/${request.params.id}: ${error.message}`);
             return h.response({ error: 'Internal Server Error' }).code(500)
         }
     }
@@ -56,7 +56,7 @@ export default class PedidoController {
             }
             return h.response(data)
         } catch (error) {
-            Logger.error(`Error in GET /pedido/status/${request.params.status}: ${error.message}`);
+            Logger.error(`Error in GET /pedidos/status/${request.params.status}: ${error.message}`);
             return h.response({ error: 'Internal Server Error' }).code(500)
         }
     }
@@ -69,7 +69,7 @@ export default class PedidoController {
             const data = await this.pedidoManagerUseCase.criarPedido(body.cliente, body.status, body.itensPedido)
             return h.response(data)
         } catch (error) {
-            Logger.error(`Error in POST /pedido: ${error.message}`);
+            Logger.error(`Error in POST /pedidos: ${error.message}`);
             return h.response({ error: 'Internal Server Error' }).code(500)
         }
     }
@@ -82,7 +82,7 @@ export default class PedidoController {
             const data = await this.pedidoManagerUseCase.checkoutPedido(body.cliente, body.status, body.itensPedido)
             return h.response(data)
         } catch (error) {
-            Logger.error(`Error in POST /pedido: ${error.message}`);
+            Logger.error(`Error in POST /pedidos: ${error.message}`);
             return h.response({ error: 'Internal Server Error' }).code(500)
         }
     }
@@ -94,7 +94,7 @@ export default class PedidoController {
             const data = await this.pedidoManagerUseCase.deletarPedido(request.params.id)
             return h.response(ok)
         } catch (error) {
-            Logger.error(`Error in DELETE /pedido/${request.params.id}: ${error.message}`);
+            Logger.error(`Error in DELETE /pedidos/${request.params.id}: ${error.message}`);
             return h.response({ error: 'Internal Server Error' }).code(500)
         }
     }
@@ -107,7 +107,7 @@ export default class PedidoController {
             const data = await this.pedidoManagerUseCase.atualizarPedido(request.params.id, body.status, body.itensPedido)
             return h.response(data)
         } catch (error) {
-            Logger.error(`Error in PUT /pedido/${request.params.id}: ${error.message}`);
+            Logger.error(`Error in PUT /pedidos/${request.params.id}: ${error.message}`);
             return h.response({ error: 'Internal Server Error' }).code(500)
         }
     }
@@ -120,7 +120,7 @@ export default class PedidoController {
             const data = await this.pedidoManagerUseCase.atualizarStatusPedido(request.params.id, body.status)
             return h.response(data)
         } catch (error) {
-            Logger.error(`Error in PUT /pedido/${request.params.id}: ${error.message}`);
+            Logger.error(`Error in PUT /pedidos/${request.params.id}: ${error.message}`);
             return h.response({ error: 'Internal Server Error' }).code(500)
         }
     }

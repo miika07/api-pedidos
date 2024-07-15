@@ -26,7 +26,7 @@ export default class PedidoRoutes implements IRoute {
         },
         {
           method: 'GET',
-          path: '/api/pedido/{id}',
+          path: '/api/pedidos/{id}',
           options: {
             handler: controller.buscarPedidoPorID,
             validate: validate.getById,
@@ -39,7 +39,7 @@ export default class PedidoRoutes implements IRoute {
         },
         {
           method: 'GET',
-          path: '/api/pedido/status/{status}',
+          path: '/api/pedidos/status/{status}',
           options: {
             handler: controller.buscarPedidoPorStatus,
             validate: validate.getByStatus,
@@ -52,7 +52,7 @@ export default class PedidoRoutes implements IRoute {
         },
         {
           method: 'POST',
-          path: '/api/pedido',
+          path: '/api/pedidos',
           options: {
             handler: controller.adicionarPedido,
             validate: validate.postPedido,
@@ -65,7 +65,7 @@ export default class PedidoRoutes implements IRoute {
         },
         {
           method: 'POST',
-          path: '/api/checkout-pedido',
+          path: '/api/pedidos/checkout-pedido',
           options: {
             handler: controller.checkoutPedido,
             validate: validate.postCheckoutPedido,
@@ -78,7 +78,7 @@ export default class PedidoRoutes implements IRoute {
       },
         {
             method: 'DELETE',
-            path: '/api/pedido/{id}',
+            path: '/api/pedidos/{id}',
             options: {
               handler: controller.deletarPedido,
               validate: validate.getById,
@@ -91,7 +91,7 @@ export default class PedidoRoutes implements IRoute {
         },
         {
           method: 'PUT',
-          path: '/api/pedido/{id}',
+          path: '/api/pedidos/{id}',
           options: {
             handler: controller.atualizarPedido,
             validate: validate.updatePedido,
@@ -104,7 +104,7 @@ export default class PedidoRoutes implements IRoute {
         },
         {
           method: 'PUT',
-          path: '/api/pedido/atualizar-status/{id}',
+          path: '/api/pedidos/atualizar-status/{id}',
           options: {
             handler: controller.atualizarStatusPedido,
             validate: validate.updateStatusPedido,
